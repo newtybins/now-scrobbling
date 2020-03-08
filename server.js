@@ -1,3 +1,5 @@
+// todo: create socket.io server based on https://github.com/tetra-fox/nowplaying/blob/master/server.js
+
 const axios = require('axios');
 const cron = require('cron');
 
