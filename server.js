@@ -3,17 +3,10 @@ const io = require('socket.io')();
 
 let track = {};
 
-const getTrack = () => axios
-    .get('https://api.spotify.com/v1/me/player/currently-playing', {
-      headers: { 
-        'Authorization': `Bearer ${process.env.AUTH}`,
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
-    })
-    .then(res => { track = res.data; });
+const getTrack = () => {
+  const axios.get(`http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=itsnewt&api_key=${process.env.LASTFM}&format=json&limit=1`).then(res => res.data);
 
 io.on('connection', socket => socket.emit('track', track));
 
 io.listen(process.env.PORT);
-setInterval(getTrack, 1000);
+setInterval(() => getTrack() && console.log(track), 1000);
