@@ -40,7 +40,7 @@ const getTrack = async () => {
   };
 
   // add information about the artists
-  track.artists = spotify.tracks.items[0].artists.map(artist => {
+  track.artists = await spotify.tracks.items[0].artists.map(artist => {
     return {
       name: artist.name,
       url: artist.external_urls.spotify
@@ -54,6 +54,7 @@ io.on("connection", async socket => {
   setInterval(async () => {
     await getTrack();
     socket.emit("track", track);
+    console.log(`Emitted: ${track.artists[0].name} - ${track.song.name}`)
   }, 1000);
 });
 
