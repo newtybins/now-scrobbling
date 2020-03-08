@@ -33,8 +33,7 @@ const getTrack = async () => {
     song: {
       name: spotify.tracks.items[0].name,
       url: spotify.tracks.items[0].external_urls.spotify,
-      preview: spotify.tracks.items[0].preview_url,
-      nowPlaying: lastfm["@attr"] !== undefined ? true : false
+      preview: spotify.tracks.items[0].preview_url
     }
   };
 
