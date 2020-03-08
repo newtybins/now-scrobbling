@@ -12,8 +12,6 @@ let track = {};
 
 // get information about the currently scrobbled track
 const getTrack = async () => {
-  if (track === undefined) return;
-
   // find my most recently/scrobbled track on lastfm
   const lastfm = await axios
     .get(
