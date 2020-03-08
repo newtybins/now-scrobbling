@@ -7,16 +7,12 @@ const nodespotify = new (require("node-spotify-api"))({
   secret: process.env.SPOTIFYSECRET
 });
 
-// when there is a connection to the websocket, emit the track event
-io.on("connection", async socket => {
-  // initialise empty object
+// initialise empty object
   let track = {};
-  let oldData = {};
 
   // get information about the currently scrobbled track
   const getTrack = async () => {
     if (track === undefined) return;
-    oldData = track;
 
     // find my most recently/scrobbled track on
     const lastfm = await axios
@@ -53,9 +49,12 @@ io.on("connection", async socket => {
     });
   };
 
+// when there is a connection to the websocket, emit the track event
+io.on("connection", async socket => {
   // run the track fetcher every 1000 ms
   setInterval(async () => {
     await getTrack();
+    console.log(track);
     socket.emit('track', track);
   }, 1000);
 });
