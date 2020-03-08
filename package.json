@@ -1,14 +1,15 @@
 {
-  "name": "hello-express",
+  "name": "spotify-nowplaying",
   "version": "0.0.1",
   "description": "A simple Node app built on Express, instantly up and running.",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js && web.js"
   },
   "dependencies": {
-    "axios": "^0.19.2"
-    "socket.io": "^2.3.0"
+    "axios": "^0.19.2",
+    "socket.io": "^2.3.0",
+    "express": "^4.17.1"
   },
   "engines": {
     "node": "12.x"
