@@ -1,7 +1,7 @@
 {
-  "name": "spotify-nowplaying",
-  "version": "0.0.1",
-  "description": "A simple Node app built on Express, instantly up and running.",
+  "name": "now-scrobbling",
+  "version": "1.0.0",
+  "description": "A web-socket server that fetches information about the song that I am currently scrobbling, and make it visible to my website.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
