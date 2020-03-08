@@ -9,6 +9,7 @@ const nodespotify = new (require("node-spotify-api"))({
 
 // initialise empty object
 let track = {};
+let oldData = {};
 
 // get information about the currently scrobbled track
 const getTrack = async () => {
@@ -33,7 +34,8 @@ const getTrack = async () => {
     song: {
       name: spotify.tracks.items[0].name,
       url: spotify.tracks.items[0].external_urls.spotify,
-      preview: spotify.tracks.items[0].preview_url
+      preview: spotify.tracks.items[0].preview_url,
+      nowPlaying: lastfm["@attr"] === undefined ? false : true
     }
   };
 
@@ -46,11 +48,25 @@ const getTrack = async () => {
   });
 };
 
+// run the track fetcher every 1000 ms
+setInterval(() => {
+  oldData = track;
+  console.log(oldData)
+  getTrack();
+  console.log(track)
+}, 1000);
+
+
 // when there is a connection to the websocket, emit the track event
-io.on("connection", socket => socket.emit("track", track));
+io.on("connection", socket => { 
+  socket.emit("track", track);
+  
+  // check for new song
+  const checkForNewSong = oldData => oldData.song.name !== track.song.name ? socket.emit('track', track) : null;
+  setInterval(checkForNewSong(), 1000);
+  
+  console.log('new song!')
+});
 
 // start websocket
 io.listen(process.env.PORT);
-
-// run the track fetcher every 1000 ms
-setInterval(() => getTrack(), 1000);
