@@ -52,9 +52,8 @@ const getTrack = async () => {
 io.on("connection", async socket => {
   // run the track fetcher every 1000 ms
   setInterval(async () => {
-    await getTrack();
+    await getTrack().catch(err => console.error(err));
     socket.emit("track", track);
-    console.log(`Emitted: ${track.artists[0].name} - ${track.song.name}`)
   }, 1000);
 });
 
