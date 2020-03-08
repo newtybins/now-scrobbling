@@ -1,10 +1,18 @@
 const axios = require('axios');
 const cron = require('cron');
 
-new cron.CronJob('* * * * * *', function() {
-  console.log('You will see this message every second');
-}, null, true, 'America/Los_Angeles').start();
+const express = require('express');
+const app = express();
 
-axios
-  .get('https://api.spotify.com/v1/me/player/currently-playing', { headers: { 'Authorization': `Bearer ${process.env.AUTH}` }})
-  .then(res => console.log(res.data));
+const getTrack = () => axios
+    .get('https://api.spotify.com/v1/me/player/currently-playing', { headers: { 'Authorization': `Bearer ${process.env.AUTH}` }})
+    .then(res => console.log(res.data));
+
+getTrack()
+// new cron.CronJob('0 */1 * * * *',  () => getTrack(), null, true, 'America/Los_Angeles').start();
+
+// express route
+app.get('/', (req, res) => {
+  console.log('/ accessed')
+  res.send(getTrack());
+})
