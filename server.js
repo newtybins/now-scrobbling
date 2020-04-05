@@ -1,9 +1,6 @@
 const axios = require("axios");
 const io = require("socket.io")();
 
-// allow for CORS
-io.origins('*:*');
-
 // create spotify client
 const nodespotify = new (require("node-spotify-api"))({
   id: process.env.SPOTIFYID,
@@ -57,7 +54,7 @@ io.on("connection", async socket => {
   setInterval(async () => {
     await getTrack().catch(err => console.error(err));
     socket.emit("track", track);
-    console.log('Emitted song.');
+    console.log(track);
   }, 1000);
 });
 
