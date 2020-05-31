@@ -65,9 +65,7 @@ io.listen(process.env.PORT);
 // make express web server
 const app = express();
 
-app.get('/', async (req, res) => res.send(`Hello! Newt is currntly listening to ${(await getTrack()).`));
-
-app.listen(process.env.PORT);
+app.get('/', async (req, res) => res.send(`Hello! Newt is currntly listening to ${(await getTrack()).song.name} by ${(await getTrack()).artists[0].name}.`));
 
 // ping the server to keep it alive
 setInterval(() => {
