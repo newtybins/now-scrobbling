@@ -53,14 +53,11 @@ const getTrack = async () => {
 const app = express();
 
 app.get('/', async (req, res) => {
-  try {
-    const track = await getTrack();
-    console.log(track)
-    // res.send(`Hello! Newt is currently listening to ${track.song.name} by ${track.artists[0].name}`);
-  } catch (error) {
-    console.error(error);
-    res.send('There was an error!')
-  }
+  res.send(`Newt is currently listening to ${track.song.nowPlaying ? `${track.song.name} by ${track.artists[0].name} on ${track.album.name}` : 'nothing!'}`)
+})
+
+app.get('/track', async (req, res) => {
+  res.send(track);
 });
 
 // create http server from express web server
@@ -75,7 +72,6 @@ io.on("connection", async socket => {
   setInterval(async () => {
     await getTrack().catch(err => console.error(err));
     socket.emit("track", track);
-    // console.log(track);
   }, 1000);
 });
 
