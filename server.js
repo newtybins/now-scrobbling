@@ -1,4 +1,5 @@
 const axios = require("axios");
+const express = require('express');
 const io = require("socket.io")();
 
 // create spotify client
@@ -60,6 +61,13 @@ io.on("connection", async socket => {
 
 // start websocket
 io.listen(process.env.PORT);
+
+// make express web server
+const app = express();
+
+app.get('/', async (req, res) => res.send(`Hello! Newt is currntly listening to ${(await getTrack()).`));
+
+app.listen(process.env.PORT);
 
 // ping the server to keep it alive
 setInterval(() => {
