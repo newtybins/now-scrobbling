@@ -60,3 +60,8 @@ io.on("connection", async socket => {
 
 // start websocket
 io.listen(process.env.PORT);
+
+// ping the server to keep it alive
+setInterval(() => {
+  axios.get(`https://now-scrobbling.glitch.me/`);
+}, 280000);
