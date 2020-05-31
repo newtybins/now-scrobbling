@@ -64,4 +64,5 @@ io.listen(process.env.PORT);
 // ping the server to keep it alive
 setInterval(() => {
   axios.get(`https://now-scrobbling.glitch.me/`);
+  console.log('Ping!');
 }, 280000);
