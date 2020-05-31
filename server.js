@@ -1,5 +1,6 @@
 const axios = require("axios");
 const express = require('express');
+const server = require('http').createServer();
 const io = require("socket.io")();
 
 // create spotify client
@@ -49,6 +50,17 @@ const getTrack = async () => {
   });
 };
 
+// make express web server
+const app = express();
+
+app.get('/', async (req, res) => {
+  const track = await getTrack().catch(err => console.error(err));
+  res.send(`Hello! Newt is currently listening to ${track.song.name} by ${track.artists[0].name}`)
+});
+
+// attach express web server to http server
+server.on('request', app);
+
 // when there is a connection to the websocket, emit the track event
 io.on("connection", async socket => {
   // run the track fetcher every 1000 ms
@@ -59,15 +71,11 @@ io.on("connection", async socket => {
   }, 1000);
 });
 
+// attach the http server to the websocket
+io.attach(server)
+
 // start websocket
 io.listen(process.env.PORT);
-
-// make express web server
-const app = express();
-
-app.get('/', async (req, res) => res.send(`Hello! Newt is currntly listening to ${(await getTrack()).`));
-
-app.listen(process.env.PORT);
 
 // ping the server to keep it alive
 setInterval(() => {
