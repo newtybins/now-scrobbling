@@ -1,12 +1,13 @@
 const axios = require('axios');
 const ms = require('ms');
+const allowCors = require('../allowCors');
 
 const nodespotify = new(require('node-spotify-api'))({
     id: process.env.SPOTIFYID,
     secret: process.env.SPOTIFYSECRET
 });
 
-module.exports = async (req, res) => {
+module.exports = allowCors(async (_req, res) => {
     // get information about the song
     const recentTrack = await axios
         .get(`http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${process.env.USERNAME}&api_key=${process.env.LASTFM}&format=json&limit=1` )
@@ -59,4 +60,4 @@ module.exports = async (req, res) => {
     } else {
         res.send({ message: 'newt is not currently listening to anything!' });
     }
-}
+});
