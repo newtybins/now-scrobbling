@@ -8,16 +8,18 @@ const nodespotify = new(require('node-spotify-api'))({
 
 module.exports = async (req, res) => {
     // get information about the song
-    const lastfm = await axios
-        .get(
-            `http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${process.env.USERNAME}&api_key=${process.env.LASTFM}&format=json&limit=1`
-        )
+    const recentTrack = await axios
+        .get(`http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${process.env.USERNAME}&api_key=${process.env.LASTFM}&format=json&limit=1` )
         .then(res => res.data.recenttracks.track[0]);
 
     const spotify = (await nodespotify.search({
         type: 'track',
-        query: `${lastfm.artist['#text']} - ${lastfm.name}`
+        query: `${recentTrack.artist['#text']} - ${recentTrack.name}`
     })).tracks.items[0];
+
+    const lastfm = await axios
+        .get(`http://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=${process.env.LASTFM}&artist=${recentTrack.artist['#text']}&track=${recentTrack.name}&format=json`)
+        .then(res => res.data.track);
 
     // get information about the artists of the song
     const artists = await spotify.artists.map(artist => {
@@ -29,8 +31,10 @@ module.exports = async (req, res) => {
         };
     });
 
+    const nowPlaying = recentTrack["@attr"].nowplaying === "true";
+
     // send off the data
-    res.send({
+    res.send(nowPlaying ? {
         name: spotify.name,
         url: spotify.external_urls.spotify,
         uri: spotify.uri,
@@ -38,6 +42,8 @@ module.exports = async (req, res) => {
         id: spotify.id,
         duration: ms(spotify.duration_ms, { long: true }),
         trackNumber: spotify.track_number,
+        listeners: lastfm.listeners,
+        playcount: lastfm.playcount,
         album: {
             name: spotify.album.name,
             url: spotify.album.external_urls.spotify,
@@ -48,5 +54,5 @@ module.exports = async (req, res) => {
             trackCount: spotify.album.total_tracks,
         },
         artists
-    });
+    } : { message: "newt is currently not scrobbling a song!" });
 }
