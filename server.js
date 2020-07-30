@@ -74,10 +74,3 @@ io.on("connection", async socket => {
     socket.emit("track", track);
   }, 1000);
 });
-
-
-// ping the server to keep it alive
-setInterval(() => {
-  axios.get(`https://now-scrobbling.glitch.me/`);
-  console.log('Ping!');
-}, 280000);
