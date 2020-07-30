@@ -34,25 +34,29 @@ module.exports = async (req, res) => {
     const nowPlaying = recentTrack["@attr"].nowplaying === "true";
 
     // send off the data
-    res.send(nowPlaying ? {
-        name: spotify.name,
-        url: spotify.external_urls.spotify,
-        uri: spotify.uri,
-        preview: spotify.preview_url,
-        id: spotify.id,
-        duration: ms(spotify.duration_ms, { long: true }),
-        trackNumber: spotify.track_number,
-        listeners: lastfm.listeners,
-        playcount: lastfm.playcount,
-        album: {
-            name: spotify.album.name,
-            url: spotify.album.external_urls.spotify,
-            uri: spotify.album.uri,
-            id: spotify.album.id,
-            images: spotify.album.images,
-            releaseDate: spotify.album.release_date,
-            trackCount: spotify.album.total_tracks,
-        },
-        artists
-    } : { message: "newt is currently not scrobbling a song!" });
+    if (nowPlaying) {
+        res.send({
+            name: spotify.name,
+            url: spotify.external_urls.spotify,
+            uri: spotify.uri,
+            preview: spotify.preview_url,
+            id: spotify.id,
+            duration: ms(spotify.duration_ms, { long: true }),
+            trackNumber: spotify.track_number,
+            listeners: parseInt(lastfm.listeners),
+            playcount: parseInt(lastfm.playcount),
+            album: {
+                name: spotify.album.name,
+                url: spotify.album.external_urls.spotify,
+                uri: spotify.album.uri,
+                id: spotify.album.id,
+                images: spotify.album.images,
+                releaseDate: spotify.album.release_date,
+                trackCount: spotify.album.total_tracks,
+            },
+            artists
+        });
+    } else {
+        res.send({ message: 'newt is not currently listening to anything!' });
+    }
 }
